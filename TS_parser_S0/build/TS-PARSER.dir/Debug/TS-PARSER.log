@@ -1,0 +1,6 @@
+﻿  TS_parser.cpp
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(16,23): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(11,40): warning C4100: "envp": parametr formalny, do którego nie istnieje odwołanie
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(11,26): warning C4100: "argv": parametr formalny, do którego nie istnieje odwołanie
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(11,14): warning C4100: "argc": parametr formalny, do którego nie istnieje odwołanie
+  TS-PARSER.vcxproj -> C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\build\Debug\TS-PARSER.exe
