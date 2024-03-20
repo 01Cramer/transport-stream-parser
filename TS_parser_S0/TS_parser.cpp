@@ -6,15 +6,13 @@
 
 //=============================================================================================================================================================================
 
-const int packet_size = 188;
-
 int main(int argc, char* argv[], char* envp[]){
     // TODO - open file -> DONE
     // TODO - check if file if opened -> DONE
     bool is_ok = true;
     FILE* file = std::fopen("../example_new.ts", "rb");
 
-    if (!file) {
+    if (!file){
         is_ok = false;
         std::perror("File opening failed");
         return is_ok;
@@ -24,18 +22,20 @@ int main(int argc, char* argv[], char* envp[]){
 
     int32_t TS_PacketId = 0;
 
-    std::byte packet[packet_size];
+    std::uint8_t packet[xTS :: TS_PacketLength];
 
     while (!std::feof(file)){
         // TODO - read from file -> DONE
-        fread(packet, 1, packet_size, file);
+        fread(packet, 1, xTS::TS_PacketLength, file);
 
         TS_PacketHeader.Reset();
-        TS_PacketHeader.Parse(/*TS_PacketBuffer*/ nullptr);
+        TS_PacketHeader.Parse(packet);
 
-        printf("%010d ", TS_PacketId);
-        TS_PacketHeader.Print();
-        printf("\n");
+        if (TS_PacketId <= 33) {
+            printf("%010d ", TS_PacketId);
+            TS_PacketHeader.Print();
+            printf("\n");
+        }
 
         TS_PacketId++;
     }

@@ -1,6 +1,16 @@
 ﻿  TS_parser.cpp
-C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(16,23): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(11,40): warning C4100: "envp": parametr formalny, do którego nie istnieje odwołanie
-C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(11,26): warning C4100: "argv": parametr formalny, do którego nie istnieje odwołanie
-C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(11,14): warning C4100: "argc": parametr formalny, do którego nie istnieje odwołanie
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(13,23): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(9,40): warning C4100: "envp": parametr formalny, do którego nie istnieje odwołanie
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(9,26): warning C4100: "argv": parametr formalny, do którego nie istnieje odwołanie
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\TS_parser.cpp(9,14): warning C4100: "argc": parametr formalny, do którego nie istnieje odwołanie
+  tsTransportStream.cpp
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(25,9): warning C4244: "=": konwersja z "int32_t" do "uint8_t", możliwa utrata danych
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(31,8): warning C4244: "=": konwersja z "int32_t" do "uint8_t", możliwa utrata danych
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(37,8): warning C4244: "=": konwersja z "int32_t" do "uint8_t", możliwa utrata danych
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(42,8): warning C4244: "=": konwersja z "int32_t" do "uint8_t", możliwa utrata danych
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(47,10): warning C4244: "=": konwersja z "int32_t" do "uint16_t", możliwa utrata danych
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(52,10): warning C4244: "=": konwersja z "int32_t" do "uint8_t", możliwa utrata danych
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(57,10): warning C4244: "=": konwersja z "int32_t" do "uint8_t", możliwa utrata danych
+C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\tsTransportStream.cpp(61,9): warning C4244: "=": konwersja z "int32_t" do "uint8_t", możliwa utrata danych
+  Generowanie kodu...
   TS-PARSER.vcxproj -> C:\Users\adria\Documents\GitHub\transport-stream-parser\TS_parser_S0\build\Debug\TS-PARSER.exe

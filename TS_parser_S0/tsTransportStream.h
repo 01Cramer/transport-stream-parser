@@ -52,8 +52,18 @@ public:
 
 //=============================================================================================================================================================================
 
-class xTS_PacketHeader
-{
+class xTS_PacketHeader{
+
+private:
+    const int32_t syncByteMask = 0b11111111000000000000000000000000;
+    const int32_t errorIndicatorMask = 0b00000000100000000000000000000000;
+    const int32_t startIndicatorMask = 0b00000000010000000000000000000000;
+    const int32_t transportPriorityMask = 0b00000000001000000000000000000000;
+    const int32_t packetIdentifierMask = 0b00000000000111111111111100000000;
+    const int32_t transportScramblingControlMask = 0b00000000000000000000000011000000;
+    const int32_t adaptationFieldControlMask = 0b00000000000000000000000000110000;
+    const int32_t continuityCounterMask = 0b00000000000000000000000000001111;
+
 public:
   enum class ePID : uint16_t
   {
@@ -67,8 +77,16 @@ public:
   };
 
 protected:
-  //TODO - header fields, e.g.:
+  //TODO - header fields, e.g.: -> DONE
   uint8_t  m_SB;
+  uint8_t m_E;
+  uint8_t m_S;
+  uint8_t m_T;
+  uint16_t m_PID;
+  uint8_t m_TSC;
+  uint8_t m_AFC;
+  uint8_t m_CC;
+
 
 public:
   void     Reset();
@@ -76,8 +94,15 @@ public:
   void     Print() const;
 
 public:
-  //TODO - direct acces to header field value, e.g.:
-  uint8_t  getSyncByte() const { return m_SB; }  
+  //TODO - direct acces to header field value, e.g.: -> DONE
+  uint8_t  getSyncByte() const { return m_SB; }
+  uint8_t  getErrorIndicator() const { return m_E; }
+  uint8_t  getStartIndicator() const { return m_S; }
+  uint8_t  getTransportPriority() const { return m_T; }
+  uint16_t  getPacketIdentifier() const { return m_PID; }
+  uint8_t  getTransportScramblingControl() const { return m_TSC; }
+  uint8_t  getAdaptationFieldControl() const { return m_AFC; }
+  uint8_t  getContinuityCounter() const { return m_CC; }
 
 public:
   //TODO - derrived informations
