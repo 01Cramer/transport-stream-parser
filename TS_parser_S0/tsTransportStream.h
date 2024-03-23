@@ -53,16 +53,25 @@ public:
 //=============================================================================================================================================================================
 
 class xTS_PacketHeader{
+private:
+    static constexpr int32_t syncByteMask = 0b11111111000000000000000000000000;
+    static constexpr int32_t errorIndicatorMask = 0b00000000100000000000000000000000;
+    static constexpr int32_t startIndicatorMask = 0b00000000010000000000000000000000;
+    static constexpr int32_t transportPriorityMask = 0b00000000001000000000000000000000;
+    static constexpr int32_t packetIdentifierMask = 0b00000000000111111111111100000000;
+    static constexpr int32_t transportScramblingControlMask = 0b00000000000000000000000011000000;
+    static constexpr int32_t adaptationFieldControlMask = 0b00000000000000000000000000110000;
+    static constexpr int32_t continuityCounterMask = 0b00000000000000000000000000001111;
 
 private:
-    const int32_t syncByteMask = 0b11111111000000000000000000000000;
-    const int32_t errorIndicatorMask = 0b00000000100000000000000000000000;
-    const int32_t startIndicatorMask = 0b00000000010000000000000000000000;
-    const int32_t transportPriorityMask = 0b00000000001000000000000000000000;
-    const int32_t packetIdentifierMask = 0b00000000000111111111111100000000;
-    const int32_t transportScramblingControlMask = 0b00000000000000000000000011000000;
-    const int32_t adaptationFieldControlMask = 0b00000000000000000000000000110000;
-    const int32_t continuityCounterMask = 0b00000000000000000000000000001111;
+    void parseSyncByte(int32_t header);
+    void parseErrorIndicator(int32_t header);
+    void parseStartIndicator(int32_t header);
+    void parseTransportPriority(int32_t header);
+    void parsePacketIdentifier(int32_t header);
+    void parseTransportScramblingControl(int32_t header);
+    void parseAdaptationFieldControl(int32_t header);
+    void parseContinuityCounter(int32_t header);
 
 public:
   enum class ePID : uint16_t
@@ -78,14 +87,14 @@ public:
 
 protected:
   //TODO - header fields, e.g.: -> DONE
-  uint8_t  m_SB;
-  uint8_t m_E;
-  uint8_t m_S;
-  uint8_t m_T;
-  uint16_t m_PID;
-  uint8_t m_TSC;
-  uint8_t m_AFC;
-  uint8_t m_CC;
+    uint8_t  m_SB = {};
+    uint8_t m_E = {};
+    uint8_t m_S = {};
+    uint8_t m_T = {};
+    uint16_t m_PID = {};
+    uint8_t m_TSC = {};
+    uint8_t m_AFC = {};
+    uint8_t m_CC = {};
 
 
 public:
@@ -105,9 +114,23 @@ public:
   uint8_t  getContinuityCounter() const { return m_CC; }
 
 public:
-  //TODO - derrived informations
-  //bool     hasAdaptationField() const { /*TODO*/ }
-  //bool     hasPayload        () const { /*TODO*/ }
+  //TODO - derrived informations -> DONE
+  bool  hasAdaptationField() const{
+      if (m_AFC == 2 || m_AFC == 3) {
+          return true;
+      }
+      else {
+          return false;
+      }
+  }
+  bool  hasPayload() const{
+      if (m_AFC == 1 || m_AFC == 3) {
+          return true;
+      }
+      else {
+          return false;
+      }
+  }
 };
 
 //=============================================================================================================================================================================

@@ -6,6 +6,7 @@
 #include <cstddef>
 
 #define NOT_VALID  -1
+#define VALID 4
 
 #if defined(_MSC_VER) && (defined(_M_X64) || defined(_M_AMD64) || defined(_M_IX86))
 #include <intrin.h>
