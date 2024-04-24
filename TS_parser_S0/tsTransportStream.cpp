@@ -21,7 +21,7 @@ int32_t xTS_PacketHeader::Parse(const uint8_t* Input){
 	
 	parseSyncByte(header);
 	
-	if (m_SB > 255 || m_SB < 0) { // check if syncByte is parsed correct
+	if (m_SB != 71) { // check if syncByte is correct
 		return NOT_VALID;
 	}
 
