@@ -16,6 +16,7 @@ int main(int argc, char* argv[], char* envp[]){
     }
 
     xTS_PacketHeader TS_PacketHeader;
+    xTS_AdaptationField TS_AdaptationField;
 
     int32_t TS_PacketId = 0;
 
@@ -27,6 +28,12 @@ int main(int argc, char* argv[], char* envp[]){
             TS_PacketHeader.Parse(packet);
             printf("%010d ", TS_PacketId);
             TS_PacketHeader.Print();
+
+            if (TS_PacketHeader.hasAdaptationField()) { // parsing adaptation field
+                TS_AdaptationField.Reset();
+                TS_AdaptationField.Parse(packet, TS_PacketHeader.getAdaptationFieldControl());
+                TS_AdaptationField.Print();
+            }
             printf("\n");
             TS_PacketId++;
         }
@@ -35,5 +42,4 @@ int main(int argc, char* argv[], char* envp[]){
     std::fclose(file);
     return EXIT_SUCCESS;
 }
-
 //=============================================================================================================================================================================

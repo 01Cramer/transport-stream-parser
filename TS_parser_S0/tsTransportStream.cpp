@@ -4,7 +4,6 @@
 // xTS_PacketHeader
 //=============================================================================================================================================================================
 
-
 /// @brief Reset - reset all TS packet header fields
 void xTS_PacketHeader::Reset(){
 }
@@ -120,4 +119,65 @@ void xTS_PacketHeader::Print() const{ // ->DONE
 	printf("%d", m_CC);
 }
 
+
+//=============================================================================================================================================================================
+// xTS_AdaptationField
+//=============================================================================================================================================================================
+
+/// @brief Reset - reset all TS packet header fields
+void xTS_AdaptationField::Reset()
+{
+	//reset
+}
+/**
+@brief Parse adaptation field
+@param PacketBuffer is pointer to buffer containing TS packet
+@param AdaptationFieldControl is value of Adaptation Field Control field of
+corresponding TS packet header
+@return Number of parsed bytes (length of AF or -1 on failure)
+*/
+int32_t xTS_AdaptationField::Parse(const uint8_t* PacketBuffer, uint8_t AdaptationFieldControl)
+{
+	//parsing
+	for (int i = 0; i < 4; i++) { // Skipping header
+		PacketBuffer++;
+	}
+	m_AdaptationFieldLength = *PacketBuffer;
+	PacketBuffer++;
+	
+	m_DC = (*PacketBuffer & m_DCMask) >> 7;
+	m_RA = (*PacketBuffer & m_RAMask) >> 6;
+	m_SP = (*PacketBuffer & m_SPMask) >> 5;
+	m_PR = (*PacketBuffer & m_PRMask) >> 4;
+	m_OR = (*PacketBuffer & m_ORMask) >> 3;
+	m_SF = (*PacketBuffer & m_SFMask) >> 2;
+	m_TP = (*PacketBuffer & m_TPMask) >> 1;
+	m_EX = (*PacketBuffer & m_EXMask);
+
+	return m_AdaptationFieldLength;
+
+}
+/// @brief Print all TS packet header fields
+void xTS_AdaptationField::Print() const
+{
+	printf(" AF: ");
+	printf(" L = ");
+	printf("%d", m_AdaptationFieldLength);
+	printf(" DC=");
+	printf("%d", m_DC);
+	printf(" RA=");
+	printf("%d", m_RA);
+	printf(" SP=");
+	printf("%d", m_SP);
+	printf(" PR=");
+	printf("%d", m_PR);
+	printf(" OR=");
+	printf("%d", m_OR);
+	printf(" SF=");
+	printf("%d", m_SF);
+	printf(" TP=");
+	printf("%d", m_TP);
+	printf(" EX=");
+	printf("%d", m_EX);
+}
 //=============================================================================================================================================================================
