@@ -25,7 +25,7 @@ int main(int argc, char* argv[], char* envp[]){
     while (!std::feof(file)){
         if (fread(packet, 1, xTS::TS_PacketLength, file) == 188){ // check if number of bytes is correct
             TS_PacketHeader.Reset();
-            TS_PacketHeader.Parse(packet);
+            TS_PacketHeader.Parse(packet); // parsing header 
             printf("%010d ", TS_PacketId);
             TS_PacketHeader.Print();
 

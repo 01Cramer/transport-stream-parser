@@ -35,8 +35,7 @@ Continuity counter           (CC ) :  4 bits
 
 //=============================================================================================================================================================================
 
-class xTS
-{
+class xTS{
 public:
   static constexpr uint32_t TS_PacketLength  = 188;
   static constexpr uint32_t TS_HeaderLength  = 4;
@@ -50,6 +49,10 @@ public:
   static constexpr uint32_t BaseToExtendedClockMultiplier =      300;
 };
 
+//=============================================================================================================================================================================
+
+//=============================================================================================================================================================================
+// xTS_PacketHeader
 //=============================================================================================================================================================================
 
 class xTS_PacketHeader{
@@ -74,8 +77,7 @@ private:
     void parseContinuityCounter(int32_t header);
 
 public:
-  enum class ePID : uint16_t
-  {
+  enum class ePID : uint16_t{
     PAT  = 0x0000,
     CAT  = 0x0001,
     TSDT = 0x0002,
@@ -86,7 +88,7 @@ public:
   };
 
 protected:
-  //TODO - header fields, e.g.: -> DONE
+    // header fields
     uint8_t  m_SB = {};
     uint8_t m_E = {};
     uint8_t m_S = {};
@@ -103,66 +105,56 @@ public:
   void     Print() const;
 
 public:
-  //TODO - direct acces to header field value, e.g.: -> DONE
-  uint8_t  getSyncByte() const { return m_SB; }
-  uint8_t  getErrorIndicator() const { return m_E; }
-  uint8_t  getStartIndicator() const { return m_S; }
-  uint8_t  getTransportPriority() const { return m_T; }
-  uint16_t  getPacketIdentifier() const { return m_PID; }
-  uint8_t  getTransportScramblingControl() const { return m_TSC; }
-  uint8_t  getAdaptationFieldControl() const { return m_AFC; }
-  uint8_t  getContinuityCounter() const { return m_CC; }
+  //direct acces to header fields value
+  uint8_t  getSyncByte() const;
+  uint8_t  getErrorIndicator() const;
+  uint8_t  getStartIndicator() const;
+  uint8_t  getTransportPriority() const;
+  uint16_t  getPacketIdentifier() const;
+  uint8_t  getTransportScramblingControl() const;
+  uint8_t  getAdaptationFieldControl() const;
+  uint8_t  getContinuityCounter() const;
 
 public:
-  //TODO - derrived informations -> DONE
-  bool  hasAdaptationField() const{
-      if (m_AFC == 2 || m_AFC == 3) {
-          return true;
-      }
-      else {
-          return false;
-      }
-  }
-  bool  hasPayload() const{
-      if (m_AFC == 1 || m_AFC == 3) {
-          return true;
-      }
-      else {
-          return false;
-      }
-  }
+  //derrived informations
+  bool  hasAdaptationField() const;
+  bool  hasPayload() const;
 };
 
 //=============================================================================================================================================================================
 
+//=============================================================================================================================================================================
+// xTS_AdaptationField
+//=============================================================================================================================================================================
+
 class xTS_AdaptationField {
 private:
-    uint8_t m_DCMask = 0b10000000;
-    uint8_t m_RAMask = 0b01000000;
-    uint8_t m_SPMask = 0b00100000;
-    uint8_t m_PRMask = 0b00010000;
-    uint8_t m_ORMask = 0b00001000;
-    uint8_t m_SFMask = 0b00000100;
-    uint8_t m_TPMask = 0b00000010;
-    uint8_t m_EXMask = 0b00000001;
+    static constexpr uint8_t m_DCMask = 0b10000000;
+    static constexpr uint8_t m_RAMask = 0b01000000;
+    static constexpr uint8_t m_SPMask = 0b00100000;
+    static constexpr uint8_t m_PRMask = 0b00010000;
+    static constexpr uint8_t m_ORMask = 0b00001000;
+    static constexpr uint8_t m_SFMask = 0b00000100;
+    static constexpr uint8_t m_TPMask = 0b00000010;
+    static constexpr uint8_t m_EXMask = 0b00000001;
 
 protected:
     //setup
-    uint8_t m_AdaptationFieldControl;
+    uint8_t m_AdaptationFieldControl = {};
 
     //mandatory fields
-    uint8_t m_AdaptationFieldLength;
-    uint8_t m_DC;
-    uint8_t m_RA;
-    uint8_t m_SP;
-    uint8_t m_PR;
-    uint8_t m_OR;
-    uint8_t m_SF;
-    uint8_t m_TP;
-    uint8_t m_EX;
-
+    uint8_t m_AdaptationFieldLength = {};
+    uint8_t m_DC = {};
+    uint8_t m_RA = {};
+    uint8_t m_SP = {};
+    uint8_t m_PR = {};
+    uint8_t m_OR = {};
+    uint8_t m_SF = {};
+    uint8_t m_TP = {};
+    uint8_t m_EX = {};
 
     //optional fields -PCR
+
 public:
     void Reset();
     int32_t Parse(const uint8_t* PacketBuffer, uint8_t m_AdaptationFieldControl);
@@ -170,9 +162,7 @@ public:
 
 public:
     // mandatory fields
-    uint8_t getAdaptationFieldLenght() const {
-        return m_AdaptationFieldLength;
-    }
+    uint8_t getAdaptationFieldLenght() const;
     //derived values
     //uint32_t getNumBytes() const {}
 };
