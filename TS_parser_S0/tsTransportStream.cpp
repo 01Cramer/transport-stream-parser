@@ -1,5 +1,4 @@
 #include "tsTransportStream.h"
-
 //=============================================================================================================================================================================
 // xTS_PacketHeader
 //=============================================================================================================================================================================
@@ -186,12 +185,11 @@ int32_t xTS_AdaptationField::Parse(const uint8_t* PacketBuffer, uint8_t Adaptati
 	m_EX = (*PacketBuffer & m_EXMask);
 
 	return m_AdaptationFieldLength;
-
 }
 
 void xTS_AdaptationField::Print() const{
 	printf(" AF: ");
-	printf(" L = ");
+	printf(" L=");
 	printf("%d", m_AdaptationFieldLength);
 	printf(" DC=");
 	printf("%d", m_DC);
@@ -215,3 +213,166 @@ uint8_t xTS_AdaptationField :: getAdaptationFieldLenght() const {
 	return m_AdaptationFieldLength;
 }
 //=============================================================================================================================================================================
+
+//=============================================================================================================================================================================
+// xPES_PacketHeader
+//=============================================================================================================================================================================
+
+void xPES_PacketHeader :: Reset() {
+	m_PacketStartCodePrefix = 0;
+	m_StreamId = 0;
+	m_PacketLength = 0;
+}
+
+int32_t xPES_PacketHeader :: Parse(const uint8_t* Input) {
+	uint8_t PSCD_Buffer[4];
+	PSCD_Buffer[0] = 0;
+
+	PSCD_Buffer[1] = *Input;
+
+	Input++;
+	PSCD_Buffer[2] = *Input;
+	Input++;
+	PSCD_Buffer[3] = *Input;
+
+	m_PacketStartCodePrefix = (PSCD_Buffer[0] << 24) |
+		(PSCD_Buffer[1] << 16) |
+		(PSCD_Buffer[2] << 8) |
+		PSCD_Buffer[3];
+
+	Input++;
+	m_StreamId = *Input;
+	
+	Input++;
+	m_PacketLength = *(uint16_t*)Input;
+	m_PacketLength = xSwapBytes16(m_PacketLength);
+
+	if (m_StreamId != eStreamId_program_stream_map &&
+		m_StreamId != eStreamId_padding_stream &&
+		m_StreamId != eStreamId_private_stream_2 &&
+		m_StreamId != eStreamId_ECM &&
+		m_StreamId != eStreamId_EMM &&
+		m_StreamId != eStreamId_program_stream_directory &&
+		m_StreamId != eStreamId_DSMCC_stream &&
+		m_StreamId != eStreamId_ITUT_H222_1_type_E) {
+		// TODO:
+	}
+	return 1;
+}
+
+void xPES_PacketHeader :: Print() const {
+	printf(" PES: ");
+	printf(" PSCP=");
+	printf("%d", 1);
+	printf(" SID=");
+	printf("%d", m_StreamId);
+	printf(" L=");
+	printf("%d", m_PacketLength);
+}
+
+uint32_t xPES_PacketHeader :: getPacketStartCodePrefix() const { 
+	return m_PacketStartCodePrefix; 
+}
+
+uint8_t xPES_PacketHeader :: getStreamId() const { 
+	return m_StreamId; 
+}
+uint16_t xPES_PacketHeader :: getPacketLength() const { 
+	return m_PacketLength; 
+}
+
+
+
+
+
+//=============================================================================================================================================================================
+
+//=============================================================================================================================================================================
+// xPES_Assembler
+//=============================================================================================================================================================================
+
+
+uint8_t* xPES_Assembler :: getPacket() { 
+	return m_Buffer; 
+}
+
+int32_t xPES_Assembler :: getNumPacketBytes() const { 
+	return m_DataOffset; 
+}
+
+void xPES_Assembler::Init(int32_t PID) {
+	m_PID = PID;
+}
+
+xPES_Assembler::eResult xPES_Assembler::AbsorbPacket(const uint8_t* TransportStreamPacket, const xTS_PacketHeader* PacketHeader, const xTS_AdaptationField* AdaptationField) {
+	eResult result = eResult::UnexpectedPID;
+	int32_t Size;
+
+	if (m_PID == 136){
+		if (PacketHeader->getContinuityCounter() != m_LastContinuityCounter + 1 && PacketHeader->getContinuityCounter() != 0) {
+			return eResult::StreamPackedLost;
+		}
+		else {
+			m_LastContinuityCounter = PacketHeader->getContinuityCounter();
+		}
+
+		if (PacketHeader->getStartIndicator() == 1){
+			result = eResult::AssemblingStarted;
+			TransportStreamPacket += 4;
+			if (PacketHeader->hasAdaptationField()) {
+				TransportStreamPacket++;
+				TransportStreamPacket += AdaptationField->getAdaptationFieldLenght();
+				Size = 188 - 4 - 1 - AdaptationField->getAdaptationFieldLenght();
+			}
+			else {
+				Size = 188 - 4;
+			}
+			m_PESH.Parse(TransportStreamPacket);
+			
+			m_BufferSize = m_PESH.getPacketLength() + 6;
+			m_DataOffset = 0;
+			m_Buffer = new uint8_t[m_BufferSize];
+			
+			xBufferAppend(TransportStreamPacket, Size);
+		}
+
+		else if (PacketHeader->getStartIndicator() == 0){
+			TransportStreamPacket += 4;
+			if (PacketHeader->hasAdaptationField()) {
+				TransportStreamPacket++;
+				TransportStreamPacket += AdaptationField->getAdaptationFieldLenght();
+				Size = 188 - 4 - 1 - AdaptationField->getAdaptationFieldLenght();
+			}
+			else {
+				Size = 188 - 4;
+			}
+			if (m_DataOffset + Size < m_BufferSize) {
+				result = eResult::AssemblingContinue;
+				xBufferAppend(TransportStreamPacket, Size);
+			}
+			else {
+				result = eResult::AssemblingFinished;
+				xBufferAppend(TransportStreamPacket, Size);
+			}
+		}
+	}
+	return result;
+}
+
+void xPES_Assembler::PrintPESH() const{
+	m_PESH.Print();
+}
+
+void xPES_Assembler::xBufferReset() {
+	delete[] m_Buffer;
+	m_BufferSize = 0;
+	m_DataOffset = 0;
+}
+
+void xPES_Assembler::xBufferAppend(const uint8_t* Data, int32_t Size) {
+	for (int i = m_DataOffset; i < m_DataOffset + Size; i++) {
+		m_Buffer[i] = *Data;
+		Data++;
+	}
+	m_DataOffset += Size;
+}
