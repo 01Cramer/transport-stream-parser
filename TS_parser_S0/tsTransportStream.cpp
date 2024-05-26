@@ -20,6 +20,7 @@ void xTS_PacketHeader::Reset(){
   @param Input is pointer to buffer containing TS packet
   @return Number of parsed bytes (4 on success, -1 on failure) 
  */
+
 int32_t xTS_PacketHeader::Parse(const uint8_t* Input){
 	int32_t header = *(int32_t*)Input;
 	header = xSwapBytes32(header);
@@ -53,7 +54,6 @@ void xTS_PacketHeader::parseErrorIndicator(int32_t header){
 	errorIndicator = (int8_t)errorIndicator;
 	m_E = errorIndicator;
 }
-
 
 void xTS_PacketHeader::parseStartIndicator(int32_t header){
 	int32_t startIndicator = header & startIndicatorMask;
@@ -167,6 +167,7 @@ void xTS_AdaptationField::Reset(){
 corresponding TS packet header
 @return Number of parsed bytes (length of AF or -1 on failure)
 */
+
 int32_t xTS_AdaptationField::Parse(const uint8_t* PacketBuffer, uint8_t AdaptationFieldControl){
 	for (int i = 0; i < xTS :: TS_HeaderLength; i++) { // Skipping header
 		PacketBuffer++;
@@ -254,8 +255,11 @@ int32_t xPES_PacketHeader :: Parse(const uint8_t* Input) {
 		m_StreamId != eStreamId_EMM &&
 		m_StreamId != eStreamId_program_stream_directory &&
 		m_StreamId != eStreamId_DSMCC_stream &&
-		m_StreamId != eStreamId_ITUT_H222_1_type_E) {
-		// TODO:
+		m_StreamId != eStreamId_ITUT_H222_1_type_E) 
+	{
+		Input += 4;
+		m_PESHeaderLength = *Input;
+		m_PESHeaderLength += 9;
 	}
 	return 1;
 }
@@ -268,6 +272,9 @@ void xPES_PacketHeader :: Print() const {
 	printf("%d", m_StreamId);
 	printf(" L=");
 	printf("%d", m_PacketLength);
+	//printf(" H_LEN=");
+	//printf("%d", m_PESHeaderDataLength);
+
 }
 
 uint32_t xPES_PacketHeader :: getPacketStartCodePrefix() const { 
@@ -277,8 +284,13 @@ uint32_t xPES_PacketHeader :: getPacketStartCodePrefix() const {
 uint8_t xPES_PacketHeader :: getStreamId() const { 
 	return m_StreamId; 
 }
+
 uint16_t xPES_PacketHeader :: getPacketLength() const { 
 	return m_PacketLength; 
+}
+
+uint8_t xPES_PacketHeader::getPESHeaderLength() const {
+	return m_PESHeaderLength;
 }
 
 

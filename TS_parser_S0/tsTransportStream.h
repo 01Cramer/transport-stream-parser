@@ -2,6 +2,7 @@
 #include "tsCommon.h"
 #include <string>
 #include <cstdint>
+
 /*
 MPEG-TS packet:
 `        3                   2                   1                   0  `
@@ -187,11 +188,13 @@ public:
         eStreamId_DSMCC_stream = 0xF2,
         eStreamId_ITUT_H222_1_type_E = 0xF8,
     };
+
 protected:
     //PES packet header
     uint32_t m_PacketStartCodePrefix;
     uint8_t m_StreamId;
     uint16_t m_PacketLength;
+    uint8_t m_PESHeaderLength;
 public:
     void Reset();
     int32_t Parse(const uint8_t* Input);
@@ -201,6 +204,7 @@ public:
     uint32_t getPacketStartCodePrefix() const;
     uint8_t getStreamId() const;
     uint16_t getPacketLength() const;
+    uint8_t getPESHeaderLength()const;
 };
 
 
@@ -221,6 +225,7 @@ public:
         AssemblingContinue,
         AssemblingFinished,
     };
+    xPES_PacketHeader m_PESH;
 protected:
     //setup
     int32_t m_PID;
@@ -231,14 +236,13 @@ protected:
     //operation
     int8_t m_LastContinuityCounter = 0;
     bool m_Started;
-    xPES_PacketHeader m_PESH;
 public:
     void Init(int32_t PID);
     eResult AbsorbPacket(const uint8_t* TransportStreamPacket, const xTS_PacketHeader* PacketHeader, const xTS_AdaptationField* AdaptationField);
     void PrintPESH() const;
     uint8_t* getPacket();
     int32_t getNumPacketBytes() const;
-protected:
     void xBufferReset();
+protected:
     void xBufferAppend(const uint8_t* Data, int32_t Size);
 };
